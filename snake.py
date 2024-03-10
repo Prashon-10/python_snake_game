@@ -46,10 +46,13 @@ def game_loop():
     foodx = round(random.randrange(0, width - snake_block) / 10.0) * 10.0
     foody = round(random.randrange(0, height - snake_block) / 10.0) * 10.0
 
+    # initialize the score
+    score = 0
+
     while not game_over:
         while game_close:
             game_display.fill(black)
-            message("You Lost! Press C-Play Again or Q- Quit", red)
+            message("You Lost! Your Score: {} Press C-Play Again or Q- Quit".format(score), red)
             our_snake(snake_block, snake_list)
             pygame.display.update()
 
@@ -83,7 +86,7 @@ def game_loop():
         x1 += x1_change
         y1 += y1_change
 
-        # Checking for collisions with the borders
+        # Check for the collisions with the borders
         if x1 >= width or x1 < 0 or y1 >= height or y1 < 0:
             game_close = True
 
@@ -100,21 +103,27 @@ def game_loop():
             foodx = round(random.randrange(0, width - snake_block) / 10.0) * 10.0
             foody = round(random.randrange(0, height - snake_block) / 10.0) * 10.0
             length_of_snake += 1
+            score += 10  # Increment the score when the snake eats the food
 
         # Maintain the length of the snake
         if len(snake_list) > length_of_snake:
             del snake_list[0]
 
-        # Checking collisions with the snake itself
+        # checking the collisions with snake itself
         for segment in snake_list[:-1]:
             if segment == snake_head:
                 game_close = True
+
+        # Display the score during gameplay
+        font_score = pygame.font.SysFont(None, 25)
+        score_text = font_score.render("Score: {}".format(score), True, white)
+        game_display.blit(score_text, [10, 10])
 
         our_snake(snake_block, snake_list)
 
         pygame.display.update()
 
-        # Set the snake speed
+        # set the snake speed
         pygame.time.Clock().tick(snake_speed)
 
     pygame.quit()
